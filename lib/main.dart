@@ -12,11 +12,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      
-        // is not restarted.
-
+      // is not restarted.
+      debugShowCheckedModeBanner: false,
       home: Homepage(),
     );
   }
 }
-

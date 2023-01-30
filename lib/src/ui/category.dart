@@ -118,11 +118,13 @@ class _CategoryState extends State<Category> {
           child: Text(
             'Now showing',
             style: TextStyle(
-                color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
+                color: Colors.deepPurpleAccent,
+                fontSize: 20,
+                fontWeight: FontWeight.w600),
           ),
         ),
         Container(
-          height: 250,
+          height: 400,
           child: BlocBuilder<MovieBloc, MovieState>(
             builder: (context, state) {
               //ตอนดึงข้อมูลยังไม่เสร็จ
@@ -131,38 +133,64 @@ class _CategoryState extends State<Category> {
               } else if (state is MovieLoaded) {
                 List<Movie> movies = state.movieList;
 
-                return ListView.separated(
+                return ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemBuilder: ((context, index) {
                       Movie movie = movies[index];
 
-                      return GestureDetector(
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            child: CachedNetworkImage(
-                              imageUrl:
-                                  'https://image.tmdb.org/t/p/original/${movie.backdropPath}',
-                              placeholder: (context, url) => Platform.isAndroid
-                                  ? CircularProgressIndicator()
-                                  : CupertinoActivityIndicator(),
-                              width: 200,
-                              fit: BoxFit.cover,
-                              errorWidget: (context, url, error) => Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage('assets/image/not.jpg'),
+                      return SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            GestureDetector(
+                              child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: ClipRRect(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        'https://image.tmdb.org/t/p/original/${movie.backdropPath}',
+                                    placeholder: (context, url) =>
+                                        Platform.isAndroid
+                                            ? CircularProgressIndicator()
+                                            : CupertinoActivityIndicator(),
+                                    width: 200,
+                                    height: 300,
+                                    fit: BoxFit.cover,
+                                    errorWidget: (context, url, error) =>
+                                        Container(
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: AssetImage(
+                                              'assets/image/not.jpg'),
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.deepPurpleAccent,
+                                  borderRadius: BorderRadius.circular(20)),
+                              padding: EdgeInsets.all(10),
+                              child: Text(
+                                movie.title.toString().length > 30
+                                    ? '${movie.title.toString().substring(0, 25)}...'
+                                    : movie.title.toString(),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            )
+                          ],
                         ),
                       );
-                    }),
-                    separatorBuilder: ((context, index) {
-                      return const Divider();
                     }),
                     itemCount: movies.length);
               } else {
@@ -175,58 +203,6 @@ class _CategoryState extends State<Category> {
           ),
         )
       ],
-    );
-  }
-
-  Widget buildbody(BuildContext context) {
-    return BlocBuilder<MovieBloc, MovieState>(
-      builder: (context, state) {
-        //ตอนดึงข้อมูลยังไม่เสร็จ
-        if
-            //ตอนดึงข้อมูลยังเสร็จแล้ว
-
-            (state is MovieLoaded) {
-          List<Movie> movies = state.movieList;
-          return ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemBuilder: ((context, index) {
-                Movie movie = movies[index];
-
-                return GestureDetector(
-                  child: Stack(alignment: Alignment.bottomLeft, children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      child: CachedNetworkImage(
-                        imageUrl:
-                            'https://image.tmdb.org/t/p/original/${movie.backdropPath}',
-                        placeholder: (context, url) => Platform.isAndroid
-                            ? CircularProgressIndicator()
-                            : CupertinoActivityIndicator(),
-                        height: 30,
-                        width: 50,
-                        fit: BoxFit.cover,
-                        errorWidget: (context, url, error) => Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage('assets/image/not.jpg'),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ]),
-                );
-              }),
-              separatorBuilder: ((context, index) {
-                return const Divider();
-              }),
-              itemCount: movies.length);
-        } else {
-          // errorตอนดึง
-          return Container(
-              child: Text('ดึงไม่ได้', style: TextStyle(color: Colors.white)));
-        }
-      },
     );
   }
 }
