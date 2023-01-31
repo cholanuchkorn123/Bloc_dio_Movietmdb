@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_bloc_dio/src/ui/moviedetail.dart';
 
 import 'dart:io';
 
@@ -82,6 +83,13 @@ class Homepage extends StatelessWidget {
                       itemBuilder: ((context, index, realIndex) {
                         Movie movie = movies[index];
                         return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        Moviedetialscreen(movie: movie)));
+                          },
                           child:
                               Stack(alignment: Alignment.bottomLeft, children: [
                             ClipRRect(
