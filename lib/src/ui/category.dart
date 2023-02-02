@@ -11,6 +11,7 @@ import '../bloc/moviebloc/movie_bloc.dart';
 import '../bloc/moviebloc/movie_state.dart';
 import '../modal/genre.dart';
 import '../modal/movie.dart';
+import 'moviedetail.dart';
 
 class Category extends StatefulWidget {
   final int selectindex;
@@ -47,7 +48,7 @@ class _CategoryState extends State<Category> {
 
   Widget buildgenre(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         BlocBuilder<GenreblocBloc, GenreblocState>(
           builder: (context, state) {
@@ -78,18 +79,20 @@ class _CategoryState extends State<Category> {
                                 });
                               },
                               child: Container(
-                                padding: EdgeInsets.all(15),
+                                padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
                                     color: selectedindex == genre.id
-                                        ? Colors.deepPurpleAccent
-                                        : Colors.deepPurpleAccent.shade100,
-                                    borderRadius: BorderRadius.circular(30)),
+                                        ? Color(0xffFF9E9E)
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(
+                                        width: 2, color: Colors.grey)),
                                 child: Text(
                                   genre.name.toString(),
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 15,
-                                      fontWeight: FontWeight.w600),
+                                      fontWeight: FontWeight.w500),
                                 ),
                               ),
                             ),
@@ -111,20 +114,20 @@ class _CategoryState extends State<Category> {
           },
         ),
         SizedBox(
-          height: 20,
+          height: 5,
         ),
         Container(
-          padding: EdgeInsets.only(bottom: 30),
+          padding: EdgeInsets.only(bottom: 5, right: 15),
           child: Text(
-            'Now showing',
+            'Now Showing',
             style: TextStyle(
-                color: Colors.deepPurpleAccent,
+                color: Color(0xff3C2A21),
                 fontSize: 20,
-                fontWeight: FontWeight.w600),
+                fontWeight: FontWeight.w800),
           ),
         ),
         Container(
-          height: 400,
+          height: 350,
           child: BlocBuilder<MovieBloc, MovieState>(
             builder: (context, state) {
               //ตอนดึงข้อมูลยังไม่เสร็จ
@@ -142,8 +145,16 @@ class _CategoryState extends State<Category> {
                         child: Column(
                           children: [
                             GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            Moviedetialscreen(movie: movie)));
+                              },
                               child: Padding(
-                                padding: const EdgeInsets.all(16),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16),
                                 child: ClipRRect(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10)),
@@ -155,7 +166,7 @@ class _CategoryState extends State<Category> {
                                             ? CircularProgressIndicator()
                                             : CupertinoActivityIndicator(),
                                     width: 200,
-                                    height: 300,
+                                    height: 250,
                                     fit: BoxFit.cover,
                                     errorWidget: (context, url, error) =>
                                         Container(
@@ -170,22 +181,30 @@ class _CategoryState extends State<Category> {
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              height: 15,
-                            ),
                             Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.deepPurpleAccent,
-                                  borderRadius: BorderRadius.circular(20)),
-                              padding: EdgeInsets.all(10),
-                              child: Text(
-                                movie.title.toString().length > 30
-                                    ? '${movie.title.toString().substring(0, 25)}...'
-                                    : movie.title.toString(),
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    movie.title.toString().length > 30
+                                        ? '${movie.title.toString().substring(0, 25)}...'
+                                        : movie.title.toString(),
+                                    style: TextStyle(
+                                        color: Color(0xff3C2A21),
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                      movie.releaseDate
+                                          .toString()
+                                          .substring(0, 10),
+                                      style: TextStyle(
+                                          color: Color(0xff3C2A21),
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w500))
+                                ],
                               ),
                             )
                           ],

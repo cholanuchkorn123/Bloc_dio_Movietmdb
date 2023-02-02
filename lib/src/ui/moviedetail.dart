@@ -27,7 +27,8 @@ class Moviedetialscreen extends StatelessWidget {
       ],
       child: WillPopScope(
           onWillPop: () async => true,
-          child: Scaffold(body: buildbody(context))),
+          child: Scaffold(
+              backgroundColor: Color(0xff00425A), body: buildbody(context))),
     );
   }
 }
@@ -71,10 +72,20 @@ Widget buildbody(context) {
                       ),
                     ),
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        AppBar(
-                          backgroundColor: Colors.transparent,
-                          elevation: 0,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 50, left: 20),
+                            child: Icon(
+                              Icons.arrow_back_ios,
+                              color: Colors.black,
+                              size: 30,
+                            ),
+                          ),
                         ),
                         GestureDetector(
                           onTap: () async {
@@ -86,17 +97,17 @@ Widget buildbody(context) {
                             child: Column(
                               children: [
                                 Container(
-                                  padding: EdgeInsets.only(top: 40),
+                                  padding: EdgeInsets.only(top: 70),
                                   child: Icon(
                                     Icons.play_circle_outline,
-                                    size: 80,
+                                    size: 70,
                                     color: Colors.white,
                                   ),
                                 ),
                                 Text(
                                   moviedetial.title,
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 30),
+                                      color: Colors.white, fontSize: 25),
                                 )
                               ],
                             ),
@@ -109,42 +120,62 @@ Widget buildbody(context) {
                     height: 5,
                   ),
                   Container(
-                    padding: EdgeInsets.all(15),
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     child: Text(
                       'Overview',
                       style: TextStyle(
-                          color: Colors.grey,
+                          color: Colors.white,
                           fontSize: 25,
-                          fontWeight: FontWeight.w600),
+                          fontWeight: FontWeight.w800),
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.all(15),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Text(
                       moviedetial.overview,
                       maxLines: 3,
+                      style: TextStyle(color: Colors.white, height: 1.5),
                     ),
                   ),
                   SizedBox(
-                    height: 5,
+                    height: 20,
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 40),
+                    padding: EdgeInsets.symmetric(horizontal: 60),
                     child: Row(
                       children: [
                         Column(
                           children: [
-                            Text('Release Date'),
-                            Text(moviedetial.releaseDate
-                                .toString()
-                                .substring(0, 10)),
+                            Text('Release Date',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    decoration: TextDecoration.underline)),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                                moviedetial.releaseDate
+                                    .toString()
+                                    .substring(0, 10),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                )),
                           ],
                         ),
                         Expanded(child: Container()),
                         Column(
                           children: [
-                            Text('Run Time'),
-                            Text(moviedetial.runtime.toString()),
+                            Text('Run Time',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    decoration: TextDecoration.underline)),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text('${moviedetial.runtime.toString()} m',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                )),
                           ],
                         ),
                       ],
@@ -158,7 +189,7 @@ Widget buildbody(context) {
                     child: Text(
                       'Screenshot',
                       style: TextStyle(
-                          color: Colors.grey,
+                          color: Colors.white,
                           fontSize: 25,
                           fontWeight: FontWeight.w600),
                     ),
@@ -186,7 +217,7 @@ Widget buildbody(context) {
                                       Platform.isAndroid
                                           ? CircularProgressIndicator()
                                           : CupertinoActivityIndicator(),
-                                  width: 250,
+                                  width: 180,
                                   height: 350,
                                   fit: BoxFit.cover,
                                   errorWidget: (context, url, error) =>

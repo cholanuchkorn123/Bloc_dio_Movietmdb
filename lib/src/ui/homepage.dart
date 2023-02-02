@@ -25,27 +25,35 @@ class Homepage extends StatelessWidget {
           moviebloc,
         ],
         child: Scaffold(
-          backgroundColor: Colors.black,
-          body: buildbody(context),
+          backgroundColor: Color(0xffC85C8E),
+          body: Container(
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                      colors: [Color(0xffC85C8E), Color(0xffFFB26B)],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomRight)),
+              child: buildbody(context)),
           appBar: AppBar(
             centerTitle: true,
             leading: Icon(
               Icons.menu,
-              color: Colors.deepPurpleAccent,
+              color: Color(0xffD9ACF5),
             ),
-            backgroundColor: Colors.transparent,
             elevation: 0,
-            title: Text(
-              'Movie Show',
-              style: TextStyle(
-                  color: Colors.deepPurpleAccent,
-                  fontSize: 25,
-                  fontWeight: FontWeight.w600),
-            ),
+            backgroundColor: Color(0xffC85C8E),
+            // title: Text(
+            //   'Movie Show',
+            //   style: TextStyle(
+            //       color: Colors.deepPurpleAccent,
+            //       fontSize: 25,
+            //       fontWeight: FontWeight.w600),
+            // ),
             actions: [
               Container(
+                padding: EdgeInsets.only(right: 10),
                 child: CircleAvatar(
-                    backgroundImage: AssetImage('assets/image/logoflim.png')),
+                    radius: 25,
+                    backgroundImage: AssetImage('assets/image/movie.jpg')),
               )
             ],
           ),
@@ -90,47 +98,49 @@ class Homepage extends StatelessWidget {
                                     builder: (context) =>
                                         Moviedetialscreen(movie: movie)));
                           },
-                          child:
-                              Stack(alignment: Alignment.bottomLeft, children: [
-                            ClipRRect(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                              child: CachedNetworkImage(
-                                imageUrl:
-                                    'https://image.tmdb.org/t/p/original/${movie.backdropPath}',
-                                placeholder: (context, url) =>
-                                    Platform.isAndroid
-                                        ? CircularProgressIndicator()
-                                        : CupertinoActivityIndicator(),
-                                height: MediaQuery.of(context).size.height,
-                                width: MediaQuery.of(context).size.width,
-                                fit: BoxFit.cover,
-                                errorWidget: (context, url, error) => Container(
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: AssetImage('assets/image/not.jpg'),
+                          child: Stack(
+                              alignment: Alignment.bottomRight,
+                              children: [
+                                ClipRRect(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        'https://image.tmdb.org/t/p/original/${movie.backdropPath}',
+                                    placeholder: (context, url) =>
+                                        Platform.isAndroid
+                                            ? CircularProgressIndicator()
+                                            : CupertinoActivityIndicator(),
+                                    height: MediaQuery.of(context).size.height,
+                                    width: MediaQuery.of(context).size.width,
+                                    fit: BoxFit.cover,
+                                    errorWidget: (context, url, error) =>
+                                        Container(
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: AssetImage(
+                                              'assets/image/not.jpg'),
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                bottom: 15,
-                                left: 15,
-                              ),
-                              child: Text(
-                                movie.title.toString().toUpperCase(),
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                  fontFamily: 'muli',
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom: 10,
+                                    right: 15,
+                                  ),
+                                  child: Text(
+                                    movie.title.toString().toUpperCase(),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ]),
+                              ]),
                         );
                       }),
                       options: CarouselOptions(
@@ -148,10 +158,6 @@ class Homepage extends StatelessWidget {
                           EdgeInsets.symmetric(vertical: 20, horizontal: 30),
                       child: Category(),
                     ),
-                    Container(
-                      height: 60,
-                      child: Text('5555'),
-                    )
                   ],
                 );
               } else {
