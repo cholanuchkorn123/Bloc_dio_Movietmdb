@@ -1,8 +1,15 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_bloc_dio/src/bloc/moviedetial/moviedetial_bloc.dart';
+import 'package:movie_bloc_dio/src/modal/screemshot.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../modal/movie.dart';
+import '../modal/moviedetial.dart';
 
 class Moviedetialscreen extends StatelessWidget {
   final Movie movie;
@@ -18,36 +25,201 @@ class Moviedetialscreen extends StatelessWidget {
               MoviedetialBloc()..add(Moviedetialeventstart(movieid: movie.id!)),
         ),
       ],
-      child: Scaffold(
-          appBar: AppBar(
-            leading: Icon(Icons.arrow_back_ios_new_outlined),
-            backgroundColor: Colors.transparent,
-          ),
-          body: buildbody(context)),
+      child: WillPopScope(
+          onWillPop: () async => true,
+          child: Scaffold(body: buildbody(context))),
     );
   }
 }
 
 Widget buildbody(context) {
-  return Column(
-    children: [
-      BlocBuilder<MoviedetialBloc, MoviedetialState>(
-        builder: (context, state) {
-          if (state is Moviedetialloading) {
-            return Container(
-              child: Text('isloading'),
-            );
-          } else if (state is Moviedetialloaded) {
-            return Container(
-              child: Text('loaded'),
-            );
-          } else {
-            return Container(
-              child: Text('error'),
-            );
-          }
-        },
-      )
-    ],
+  return SingleChildScrollView(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        BlocBuilder<MoviedetialBloc, MoviedetialState>(
+          builder: (context, state) {
+            if (state is Moviedetialloading) {
+              return Center(
+                  child: Platform.isIOS
+                      ? CupertinoActivityIndicator()
+                      : CircularProgressIndicator());
+            } else if (state is Moviedetialloaded) {
+              Moviedetial moviedetial = state.movielist;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Stack(children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      child: CachedNetworkImage(
+                        imageUrl:
+                            'https://image.tmdb.org/t/p/original/${moviedetial.backdropPath}',
+                        placeholder: (context, url) => Platform.isAndroid
+                            ? CircularProgressIndicator()
+                            : CupertinoActivityIndicator(),
+                        height: MediaQuery.of(context).size.height / 2,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorWidget: (context, url, error) => Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage('assets/image/not.jpg'),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        AppBar(
+                          backgroundColor: Colors.transparent,
+                          elevation: 0,
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            Uri url = Uri.https('www.youtube.com',
+                                '/embed/${moviedetial.youtube}');
+                            await launchUrl(url);
+                          },
+                          child: Center(
+                            child: Column(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.only(top: 40),
+                                  child: Icon(
+                                    Icons.play_circle_outline,
+                                    size: 80,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Text(
+                                  moviedetial.title,
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 30),
+                                )
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    )
+                  ]),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(15),
+                    child: Text(
+                      'Overview',
+                      style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 25,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(15),
+                    child: Text(
+                      moviedetial.overview,
+                      maxLines: 3,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 40),
+                    child: Row(
+                      children: [
+                        Column(
+                          children: [
+                            Text('Release Date'),
+                            Text(moviedetial.releaseDate
+                                .toString()
+                                .substring(0, 10)),
+                          ],
+                        ),
+                        Expanded(child: Container()),
+                        Column(
+                          children: [
+                            Text('Run Time'),
+                            Text(moviedetial.runtime.toString()),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(15),
+                    child: Text(
+                      'Screenshot',
+                      style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 25,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  Container(
+                      padding: EdgeInsets.only(bottom: 20),
+                      height: 160,
+                      child: ListView.separated(
+                          itemBuilder: (context, index) {
+                            Screenshot? image =
+                                moviedetial.movie?.backdrops![index];
+                            return Card(
+                              elevation: 3,
+                              borderOnForeground: true,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: ClipRRect(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                      'https://image.tmdb.org/t/p/w500${image?.imagePath}',
+                                  placeholder: (context, url) =>
+                                      Platform.isAndroid
+                                          ? CircularProgressIndicator()
+                                          : CupertinoActivityIndicator(),
+                                  width: 250,
+                                  height: 350,
+                                  fit: BoxFit.cover,
+                                  errorWidget: (context, url, error) =>
+                                      Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image:
+                                            AssetImage('assets/image/not.jpg'),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          scrollDirection: Axis.horizontal,
+                          separatorBuilder: ((context, index) {
+                            return VerticalDivider(
+                              color: Colors.transparent,
+                              width: 5,
+                            );
+                          }),
+                          itemCount: moviedetial.movie!.backdrops!.length)),
+                ],
+              );
+            } else {
+              return Container(
+                child: Text('error'),
+              );
+            }
+          },
+        )
+      ],
+    ),
   );
 }

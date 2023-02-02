@@ -13,7 +13,6 @@ class Apiservies {
   final String apiKey = '';
 
   Future<List<Movie>> gettoprate() async {
-    print('$baseUrl/movie/20?$apiKey');
     try {
       final response = await dio.get('$baseUrl/movie/now_playing?$apiKey');
 
