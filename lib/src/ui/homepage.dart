@@ -34,11 +34,6 @@ class Homepage extends StatelessWidget {
                       end: Alignment.bottomRight)),
               child: buildbody(context)),
           appBar: AppBar(
-            centerTitle: true,
-            leading: Icon(
-              Icons.menu,
-              color: Color(0xffD9ACF5),
-            ),
             elevation: 0,
             backgroundColor: Color(0xffC85C8E),
             // title: Text(
@@ -50,11 +45,62 @@ class Homepage extends StatelessWidget {
             // ),
             actions: [
               Container(
-                padding: EdgeInsets.only(right: 10),
-                child: CircleAvatar(
-                    radius: 25,
-                    backgroundImage: AssetImage('assets/image/movie.jpg')),
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                width: MediaQuery.of(context).size.width,
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  backgroundColor: Colors.purple.shade200,
+                                  content: Text(
+                                    'Coming Soon',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 25),
+                                  ),
+                                ));
+                      },
+                      child: Container(
+                        child: Icon(
+                          Icons.person,
+                          color: Color(0xffD9ACF5),
+                          size: 30,
+                        ),
+                      ),
+                    ),
+                    Expanded(child: Container()),
+                    GestureDetector(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                                  backgroundColor: Colors.purple.shade200,
+                                  content: Text(
+                                    'Coming Soon',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 25),
+                                  ),
+                                ));
+                      },
+                      child: Container(
+                        child: Icon(
+                          Icons.menu,
+                          color: Color(0xffD9ACF5),
+                          size: 30,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               )
+              // Container(
+              //   padding: EdgeInsets.only(right: 10),
+              //   child: CircleAvatar(
+              //       radius: 25,
+              //       backgroundImage: AssetImage('assets/image/movie.jpg')),
+              // )
             ],
           ),
         ));

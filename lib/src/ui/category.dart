@@ -153,8 +153,8 @@ class _CategoryState extends State<Category> {
                                             Moviedetialscreen(movie: movie)));
                               },
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 16),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 16, horizontal: 8),
                                 child: ClipRRect(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10)),

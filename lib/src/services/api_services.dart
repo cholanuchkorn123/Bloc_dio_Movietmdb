@@ -10,7 +10,7 @@ import '../modal/movie.dart';
 class Apiservies {
   final Dio dio = Dio();
   final String baseUrl = 'https://api.themoviedb.org/3';
-  final String apiKey = 'your-api-key';
+  final String apiKey = '';
 
   Future<List<Movie>> gettoprate() async {
     try {
