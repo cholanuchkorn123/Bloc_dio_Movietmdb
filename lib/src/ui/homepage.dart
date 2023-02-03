@@ -3,7 +3,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_bloc_dio/src/ui/components/status.dart';
 import 'package:movie_bloc_dio/src/ui/moviedetail.dart';
+import 'package:movie_bloc_dio/src/ui/utilities/constants.dart';
 
 import 'dart:io';
 
@@ -11,6 +13,8 @@ import '../bloc/moviebloc/movie_bloc.dart';
 import '../bloc/moviebloc/movie_state.dart';
 import '../modal/movie.dart';
 import 'category.dart';
+import 'components/pictureframe.dart';
+import 'components/showalert.dart';
 
 class Homepage extends StatelessWidget {
   const Homepage({super.key});
@@ -36,13 +40,6 @@ class Homepage extends StatelessWidget {
           appBar: AppBar(
             elevation: 0,
             backgroundColor: Color(0xffC85C8E),
-            // title: Text(
-            //   'Movie Show',
-            //   style: TextStyle(
-            //       color: Colors.deepPurpleAccent,
-            //       fontSize: 25,
-            //       fontWeight: FontWeight.w600),
-            // ),
             actions: [
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 15),
@@ -51,16 +48,7 @@ class Homepage extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                                  backgroundColor: Colors.purple.shade200,
-                                  content: Text(
-                                    'Coming Soon',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 25),
-                                  ),
-                                ));
+                        Showdialog(context, 'Comingsoon');
                       },
                       child: Container(
                         child: Icon(
@@ -73,16 +61,7 @@ class Homepage extends StatelessWidget {
                     Expanded(child: Container()),
                     GestureDetector(
                       onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                                  backgroundColor: Colors.purple.shade200,
-                                  content: Text(
-                                    'Coming Soon',
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 25),
-                                  ),
-                                ));
+                        Showdialog(context, 'Comingsoon');
                       },
                       child: Container(
                         child: Icon(
@@ -95,22 +74,14 @@ class Homepage extends StatelessWidget {
                   ],
                 ),
               )
-              // Container(
-              //   padding: EdgeInsets.only(right: 10),
-              //   child: CircleAvatar(
-              //       radius: 25,
-              //       backgroundImage: AssetImage('assets/image/movie.jpg')),
-              // )
             ],
           ),
         ));
   }
 
   Widget buildbody(BuildContext context) {
-    return
-        //สร้างเอาไว้ใช้ responsive design ได้ตามwidth
-        LayoutBuilder(
-            builder: (BuildContext context, BoxConstraints constraints) {
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
       return SingleChildScrollView(
           child: ConstrainedBox(
         constraints: BoxConstraints(
@@ -121,10 +92,7 @@ class Homepage extends StatelessWidget {
             builder: (context, state) {
               //ตอนดึงข้อมูลยังไม่เสร็จ
               if (state is MovieLoading) {
-                return Center(
-                    child: Platform.isIOS
-                        ? CupertinoActivityIndicator()
-                        : CircularProgressIndicator());
+                return Status().loading(context);
               } else if
                   //ตอนดึงข้อมูลยังเสร็จแล้ว
 
@@ -147,29 +115,12 @@ class Homepage extends StatelessWidget {
                           child: Stack(
                               alignment: Alignment.bottomRight,
                               children: [
-                                ClipRRect(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10)),
-                                  child: CachedNetworkImage(
-                                    imageUrl:
-                                        'https://image.tmdb.org/t/p/original/${movie.backdropPath}',
-                                    placeholder: (context, url) =>
-                                        Platform.isAndroid
-                                            ? CircularProgressIndicator()
-                                            : CupertinoActivityIndicator(),
-                                    height: MediaQuery.of(context).size.height,
-                                    width: MediaQuery.of(context).size.width,
-                                    fit: BoxFit.cover,
-                                    errorWidget: (context, url, error) =>
-                                        Container(
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: AssetImage(
-                                              'assets/image/not.jpg'),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                Pictureframe(
+                                  movie: movie,
+                                  baseurl:
+                                      'https://image.tmdb.org/t/p/original/',
+                                  width: MediaQuery.of(context).size.width,
+                                  height: MediaQuery.of(context).size.height,
                                 ),
                                 Padding(
                                   padding: EdgeInsets.only(
@@ -178,11 +129,7 @@ class Homepage extends StatelessWidget {
                                   ),
                                   child: Text(
                                     movie.title.toString().toUpperCase(),
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15,
-                                    ),
+                                    style: ktextinpicture,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
@@ -208,7 +155,7 @@ class Homepage extends StatelessWidget {
                 );
               } else {
                 // errorตอนดึง
-                return Container(child: Text('ดึงไม่ได้'));
+                return Status().falied(context);
               }
             },
           )

@@ -6,6 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_bloc_dio/src/bloc/genresbloc/genrebloc_bloc.dart';
+import 'package:movie_bloc_dio/src/ui/components/pictureframe.dart';
+import 'package:movie_bloc_dio/src/ui/components/status.dart';
+import 'package:movie_bloc_dio/src/ui/utilities/constants.dart';
 
 import '../bloc/moviebloc/movie_bloc.dart';
 import '../bloc/moviebloc/movie_state.dart';
@@ -26,7 +29,6 @@ class _CategoryState extends State<Category> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     selectedindex = widget.selectindex;
   }
@@ -53,10 +55,7 @@ class _CategoryState extends State<Category> {
         BlocBuilder<GenreblocBloc, GenreblocState>(
           builder: (context, state) {
             if (state is Genreloading) {
-              return Center(
-                  child: Platform.isIOS
-                      ? CupertinoActivityIndicator()
-                      : CircularProgressIndicator());
+              return Status().loading(context);
             } else if (state is Genreloaded) {
               List<Genre> genres = state.movieList;
               return Container(
@@ -89,10 +88,7 @@ class _CategoryState extends State<Category> {
                                         width: 2, color: Colors.grey)),
                                 child: Text(
                                   genre.name.toString(),
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w500),
+                                  style: stylesmallname,
                                 ),
                               ),
                             ),
@@ -109,7 +105,7 @@ class _CategoryState extends State<Category> {
                     itemCount: genres.length),
               );
             } else {
-              return Text('แตก');
+              return Status().falied(context);
             }
           },
         ),
@@ -118,21 +114,14 @@ class _CategoryState extends State<Category> {
         ),
         Container(
           padding: EdgeInsets.only(bottom: 5, right: 15),
-          child: Text(
-            'Now Showing',
-            style: TextStyle(
-                color: Color(0xff3C2A21),
-                fontSize: 20,
-                fontWeight: FontWeight.w800),
-          ),
+          child: Text('Now Showing', style: styleheadname),
         ),
         Container(
           height: 350,
           child: BlocBuilder<MovieBloc, MovieState>(
             builder: (context, state) {
-              //ตอนดึงข้อมูลยังไม่เสร็จ
               if (state is MovieLoading) {
-                return Center();
+                return Status().loading(context);
               } else if (state is MovieLoaded) {
                 List<Movie> movies = state.movieList;
 
@@ -153,33 +142,14 @@ class _CategoryState extends State<Category> {
                                             Moviedetialscreen(movie: movie)));
                               },
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 16, horizontal: 8),
-                                child: ClipRRect(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10)),
-                                  child: CachedNetworkImage(
-                                    imageUrl:
-                                        'https://image.tmdb.org/t/p/original/${movie.backdropPath}',
-                                    placeholder: (context, url) =>
-                                        Platform.isAndroid
-                                            ? CircularProgressIndicator()
-                                            : CupertinoActivityIndicator(),
-                                    width: 200,
-                                    height: 250,
-                                    fit: BoxFit.cover,
-                                    errorWidget: (context, url, error) =>
-                                        Container(
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          image: AssetImage(
-                                              'assets/image/not.jpg'),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 16, horizontal: 8),
+                                  child: Pictureframe(
+                                    movie: movie,
+                                    baseurl:
+                                        'https://image.tmdb.org/t/p/original/',
+                                    radius: 15,
+                                  )),
                             ),
                             Container(
                               child: Column(
@@ -214,9 +184,7 @@ class _CategoryState extends State<Category> {
                     itemCount: movies.length);
               } else {
                 // errorตอนดึง
-                return Container(
-                    child: Text('ดึงไม่ได้',
-                        style: TextStyle(color: Colors.white)));
+                return Status().falied(context);
               }
             },
           ),
