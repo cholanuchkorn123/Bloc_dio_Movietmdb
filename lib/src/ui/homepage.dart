@@ -30,13 +30,13 @@ class Homepage extends StatelessWidget {
         ],
         child: Scaffold(
           backgroundColor: Color(0xffC85C8E),
-          body: Container(
+          body: MediaQuery.of(context).orientation == Orientation.portrait? Container(
               decoration: BoxDecoration(
                   gradient: LinearGradient(
                       colors: [Color(0xffC85C8E), Color(0xffFFB26B)],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomRight)),
-              child: buildbody(context)),
+              child: buildbody(context)):Center(child: Text('Coming soon'),),
           appBar: AppBar(
             elevation: 0,
             backgroundColor: Color(0xffC85C8E),
