@@ -1,24 +1,23 @@
-import 'dart:io';
-
-import 'package:cached_network_image/cached_network_image.dart';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_bloc_dio/src/bloc/genresbloc/genre_repository.dart';
 import 'package:movie_bloc_dio/src/bloc/genresbloc/genrebloc_bloc.dart';
+import 'package:movie_bloc_dio/src/bloc/genresbloc/thegenre_provider.dart';
 import 'package:movie_bloc_dio/src/ui/components/pictureframe.dart';
 import 'package:movie_bloc_dio/src/ui/components/status.dart';
 import 'package:movie_bloc_dio/src/ui/utilities/constants.dart';
 
 import '../bloc/moviebloc/movie_bloc.dart';
+import '../bloc/moviebloc/movie_repository.dart';
 import '../bloc/moviebloc/movie_state.dart';
+import '../bloc/moviebloc/themoviedb_provider.dart';
 import '../modal/genre.dart';
 import '../modal/movie.dart';
 import 'moviedetail.dart';
 
 class Category extends StatefulWidget {
   final int selectindex;
-  Category({this.selectindex = 28});
+  const Category({super.key, this.selectindex = 28});
 
   @override
   State<Category> createState() => _CategoryState();
@@ -33,14 +32,16 @@ class _CategoryState extends State<Category> {
     selectedindex = widget.selectindex;
   }
 
+  @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => GenreblocBloc()..add(Genreeventstart()),
+          create: (context) => GenreblocBloc(repository: Genrerepository(provider: TheGenreProvider()))..add(Genreeventstart()),
         ),
         BlocProvider(
-          create: (context) => MovieBloc()
+          create: (context) => MovieBloc(
+              movierepository: Movierepository(provider: TheMovidProvider()))
             ..add(MovieEventStarted(movieId: selectedindex!, query: '')),
         ),
       ],
@@ -57,7 +58,7 @@ class _CategoryState extends State<Category> {
             if (state is Genreloading) {
               return Status().loading(context);
             } else if (state is Genreloaded) {
-              List<Genre> genres = state.movieList;
+              List<Genre> genres = state.genreList;
               return Container(
                 height: 60,
                 child: ListView.separated(

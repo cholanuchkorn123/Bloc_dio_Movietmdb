@@ -1,13 +1,15 @@
-import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movie_bloc_dio/src/bloc/moviebloc/movie_repository.dart';
+import 'package:movie_bloc_dio/src/bloc/moviebloc/themoviedb_provider.dart';
 import 'package:movie_bloc_dio/src/ui/components/status.dart';
 import 'package:movie_bloc_dio/src/ui/moviedetail.dart';
 import 'package:movie_bloc_dio/src/ui/utilities/constants.dart';
 
-import 'dart:io';
+
 
 import '../bloc/moviebloc/movie_bloc.dart';
 import '../bloc/moviebloc/movie_state.dart';
@@ -23,13 +25,13 @@ class Homepage extends StatelessWidget {
   Widget build(BuildContext context) {
     final moviebloc = BlocProvider(
         create: (context) =>
-            MovieBloc()..add(MovieEventStarted(query: '', movieId: 0)));
+            MovieBloc(movierepository: Movierepository(provider: TheMovidProvider()))..add(const MovieEventStarted(query: '', movieId: 0)));
     return MultiBlocProvider(
         providers: [
           moviebloc,
         ],
         child: Scaffold(
-          backgroundColor: Color(0xffC85C8E),
+          backgroundColor:const Color(0xffC85C8E),
           body: MediaQuery.of(context).orientation == Orientation.portrait? Container(
               decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -39,10 +41,10 @@ class Homepage extends StatelessWidget {
               child: buildbody(context)):Center(child: Text('Coming soon'),),
           appBar: AppBar(
             elevation: 0,
-            backgroundColor: Color(0xffC85C8E),
+            backgroundColor:const Color(0xffC85C8E),
             actions: [
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 15),
+                padding:const EdgeInsets.symmetric(horizontal: 15),
                 width: MediaQuery.of(context).size.width,
                 child: Row(
                   children: [
@@ -50,12 +52,10 @@ class Homepage extends StatelessWidget {
                       onTap: () {
                         Showdialog(context, 'Comingsoon');
                       },
-                      child: Container(
-                        child: Icon(
-                          Icons.person,
-                          color: Color(0xffD9ACF5),
-                          size: 30,
-                        ),
+                      child: const Icon(
+                        Icons.person,
+                        color: Color(0xffD9ACF5),
+                        size: 30,
                       ),
                     ),
                     Expanded(child: Container()),
@@ -63,12 +63,10 @@ class Homepage extends StatelessWidget {
                       onTap: () {
                         Showdialog(context, 'Comingsoon');
                       },
-                      child: Container(
-                        child: Icon(
-                          Icons.menu,
-                          color: Color(0xffD9ACF5),
-                          size: 30,
-                        ),
+                      child: const Icon(
+                        Icons.menu,
+                        color: Color(0xffD9ACF5),
+                        size: 30,
                       ),
                     ),
                   ],
@@ -123,7 +121,7 @@ class Homepage extends StatelessWidget {
                                   height: MediaQuery.of(context).size.height,
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.only(
+                                  padding:const EdgeInsets.only(
                                     bottom: 10,
                                     right: 15,
                                   ),
@@ -139,17 +137,17 @@ class Homepage extends StatelessWidget {
                       options: CarouselOptions(
                         enableInfiniteScroll: true,
                         autoPlay: true,
-                        autoPlayInterval: Duration(seconds: 5),
-                        autoPlayAnimationDuration: Duration(milliseconds: 800),
+                        autoPlayInterval:const Duration(seconds: 5),
+                        autoPlayAnimationDuration:const  Duration(milliseconds: 800),
                         pauseAutoPlayOnTouch: true,
                         viewportFraction: 0.8,
                         enlargeCenterPage: true,
                       ),
                     ),
-                    Padding(
+                    const Padding(
                       padding:
-                          EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-                      child: Category(),
+                        EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+                      child:Category(),
                     ),
                   ],
                 );

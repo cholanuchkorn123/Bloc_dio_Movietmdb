@@ -1,21 +1,24 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:movie_bloc_dio/src/bloc/moviedetial/moviedetial_repository.dart';
 import 'package:movie_bloc_dio/src/modal/moviedetial.dart';
-import 'package:movie_bloc_dio/src/services/api_services.dart';
 
 part 'moviedetial_event.dart';
 part 'moviedetial_state.dart';
 
 class MoviedetialBloc extends Bloc<MoviedetialEvent, MoviedetialState> {
-  MoviedetialBloc() : super(Moviedetialloading()) {
+  final Moviedetialrepository moviedetialrepository;
+  MoviedetialBloc(this.moviedetialrepository) : super(Moviedetialloading()) {
     on<Moviedetialeventstart>((event, emit) async {
-      final service = Apiservies();
       try {
         Moviedetialloading();
-        final moviedata = await service.getmoviedetial(event.movieid);
-        emit(Moviedetialloaded(movielist: moviedata));
+
+        var moviedetial =
+            await moviedetialrepository.getmoviedetial(event.movieid);
+     
+        emit(Moviedetialloaded(movielist: moviedetial));
       } catch (e) {
-        print(e);
+        throw Exception(e);
       }
     });
   }

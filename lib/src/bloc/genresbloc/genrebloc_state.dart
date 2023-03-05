@@ -9,10 +9,10 @@ abstract class GenreblocState extends Equatable {
 
 class Genreloading extends GenreblocState {}
 class Genreloaded extends GenreblocState {
-   final List<Genre> movieList;
-  const Genreloaded({required this.movieList});
+   final List<Genre> genreList;
+  const Genreloaded({required this.genreList});
 
   @override
-  List<Object> get props => [movieList];
+  List<Object> get props => [genreList];
 }
 class Genreerror extends GenreblocState {}

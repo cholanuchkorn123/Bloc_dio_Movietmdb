@@ -8,6 +8,8 @@ import 'package:movie_bloc_dio/src/bloc/moviedetial/moviedetial_bloc.dart';
 import 'package:movie_bloc_dio/src/modal/screemshot.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../bloc/moviedetial/moviedetial_repository.dart';
+import '../bloc/moviedetial/the_moviedetialdb_provider.dart';
 import '../modal/movie.dart';
 import '../modal/moviedetial.dart';
 
@@ -21,8 +23,8 @@ class Moviedetialscreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) =>
-              MoviedetialBloc()..add(Moviedetialeventstart(movieid: movie.id!)),
+          create: (context) => MoviedetialBloc(Moviedetialrepository(provider: TheMovidetailsDbProvider()))
+            ..add(Moviedetialeventstart(movieid: movie.id!)),
         ),
       ],
       child: WillPopScope(
